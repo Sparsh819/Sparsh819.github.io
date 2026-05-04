@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sparsh Bandi — Engineer. Builder. Athlete.</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050b14;
+    --bg2: #080f1c;
+    --surface: #0d1829;
+    --border: #1a2d4a;
+    --accent: #00d4ff;
+    --accent2: #ff6b35;
+    --accent3: #7fff6b;
+    --text: #cdd9e8;
+    --muted: #5a7a9a;
+    --gold: #f0b429;
+    --white: #eaf2ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.3;
+  }
+
+  /* ── GRID BACKGROUND ── */
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px;
+    background: rgba(5,11,20,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+  }
+
+  .nav-logo span { color: var(--accent2); }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 60px 60px;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .hero-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-label::before {
+    content: '';
+    width: 40px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .hero-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(80px, 12vw, 160px);
+    line-height: 0.88;
+    color: var(--white);
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-name .accent-word { color: var(--accent); }
+
+  .hero-sub {
+    font-size: 16px;
+    color: var(--muted);
+    margin-top: 32px;
+    max-width: 500px;
+    line-height: 1.7;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    margin-top: 60px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+  }
+
+  .hero-stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .hero-stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .hero-cta {
+    margin-top: 48px;
+    display: flex;
+    gap: 16px;
+    opacity: 0;
+    animation: fadeUp 0.8s 1s forwards;
+  }
+
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    text-decoration: none;
+    transition: all 0.25s;
+    cursor: pointer;
+    border: none;
+    display: inline-block;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+
+  .btn-primary:hover { background: #40e0ff; transform: translateY(-2px); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--border);
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+
+  .btn-outline:hover { border-color: var(--accent); background: rgba(0,212,255,0.05); transform: translateY(-2px); }
+
+  /* Hero deco UAV SVG */
+  .hero-deco {
+    position: absolute;
+    right: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 520px;
+    opacity: 0.06;
+    pointer-events: none;
+    animation: float 8s ease-in-out infinite;
+  }
+
+  .hero-rank-badge {
+    position: absolute;
+    top: 140px;
+    right: 60px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px 28px;
+    opacity: 0;
+    animation: fadeUp 0.8s 1.2s forwards;
+  }
+
+  .badge-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .badge-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--gold);
+    line-height: 1.1;
+    margin-top: 4px;
+  }
+
+  .badge-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 100px 60px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 64px;
+  }
+
+  .section-number {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 5vw, 56px);
+    color: var(--white);
+    letter-spacing: 0.04em;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── ABOUT ── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  .about-text p {
+    color: var(--text);
+    line-height: 1.8;
+    margin-bottom: 20px;
+    font-size: 15px;
+  }
+
+  .about-highlight {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .skills-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px;
+  }
+
+  .skills-block h3 {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    transition: all 0.2s;
+    cursor: default;
+  }
+
+  .tag:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,212,255,0.05); }
+
+  .tag.highlight { border-color: rgba(0,212,255,0.3); background: rgba(0,212,255,0.06); color: var(--accent); }
+
+  /* ── EDUCATION ── */
+  .edu-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+
+  .edu-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .edu-card:hover { border-color: var(--accent); }
+
+  .edu-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+
+  .edu-inst {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .edu-degree {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .edu-score {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .edu-year {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  .achievements-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+
+  .achievement-pill {
+    background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(0,212,255,0.02));
+    border: 1px solid rgba(0,212,255,0.2);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .ach-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+
+  .ach-text strong {
+    display: block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .ach-text span {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* ── EXPERIENCE ── */
+  .exp-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 40px;
+    padding: 40px 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .exp-item:last-child { border-bottom: none; }
+
+  .exp-meta {
+    position: relative;
+  }
+
+  .exp-meta::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: -20px;
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--accent);
+    background: var(--bg);
+    transform: rotate(45deg);
+  }
+
+  .exp-company {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+
+  .exp-role {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .exp-date {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  .exp-bullets {
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .exp-bullets li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 12px;
+    line-height: 1.6;
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .exp-bullets li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 12px;
+  }
+
+  /* ── PROJECTS ── */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    cursor: default;
+  }
+
+  .project-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+
+  .project-card .bg-num {
+    position: absolute;
+    right: 20px;
+    bottom: -20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 120px;
+    color: rgba(255,255,255,0.015);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .project-tag {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border: 1px solid rgba(0,212,255,0.3);
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .project-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--white);
+    margin-bottom: 16px;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+
+  .project-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+
+  .project-highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .project-hl {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .project-hl::before {
+    content: '';
+    width: 20px;
+    height: 1px;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* ── COMPETITIONS ── */
+  .comp-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .comp-card {
+    border: 1px solid var(--border);
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    background: var(--surface);
+    transition: border-color 0.3s;
+  }
+
+  .comp-card:hover { border-color: var(--accent2); }
+
+  .comp-rank {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    line-height: 0.9;
+    color: var(--accent2);
+    margin-bottom: 12px;
+  }
+
+  .comp-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .comp-context {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ── POSITIONS ── */
+  .pos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .pos-item {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pos-item:first-child { border-top: 1px solid var(--border); }
+
+  .pos-left {
+    padding: 32px;
+    border-right: 1px solid var(--border);
+  }
+
+  .pos-org {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .pos-role-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--accent2);
+    text-transform: uppercase;
+  }
+
+  .pos-period {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  .pos-right {
+    padding: 32px;
+  }
+
+  .pos-right ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pos-right li {
+    position: relative;
+    padding-left: 20px;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .pos-right li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--accent2);
+    font-size: 10px;
+    top: 3px;
+  }
+
+  /* ── SOCIAL IMPACT ── */
+  .impact-wrap {
+    background: linear-gradient(135deg, rgba(127,255,107,0.04), rgba(0,212,255,0.04));
+    border: 1px solid rgba(127,255,107,0.15);
+    padding: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .impact-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--accent3);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .impact-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    color: var(--white);
+    line-height: 0.95;
+    margin-bottom: 20px;
+  }
+
+  .impact-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .impact-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .metric {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(127,255,107,0.1);
+    padding: 24px;
+  }
+
+  .metric-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--accent3);
+    line-height: 1;
+  }
+
+  .metric-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    margin-top: 6px;
+  }
+
+  /* ── SPORTS ── */
+  .sports-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .sport-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .sport-card:hover { border-color: var(--gold); }
+
+  .sport-card::after {
+    content: attr(data-sport);
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    color: rgba(255,255,255,0.02);
+    pointer-events: none;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+
+  .sport-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .sport-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    margin-bottom: 24px;
+  }
+
+  .sport-medals {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .medal {
+    font-size: 11px;
+    padding: 6px 14px;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .medal.gold { background: rgba(240,180,41,0.1); border: 1px solid rgba(240,180,41,0.3); color: var(--gold); }
+  .medal.bronze { background: rgba(205,127,50,0.1); border: 1px solid rgba(205,127,50,0.3); color: #cd7f32; }
+  .medal.blue { background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.2); color: var(--accent); }
+
+  .sport-details {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sport-details li {
+    font-size: 13px;
+    color: var(--muted);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .sport-details li::before {
+    content: '·';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    padding: 60px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--white);
+  }
+
+  .footer-info {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    line-height: 2;
+  }
+
+  .footer-accent { color: var(--accent); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(-50%) rotate(-3deg); }
+    50% { transform: translateY(calc(-50% - 20px)) rotate(3deg); }
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Scanline on hero */
+  .scanline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.3), transparent);
+    animation: scan 6s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes scan {
+    from { top: 0; opacity: 0.6; }
+    to { top: 100%; opacity: 0; }
+  }
+
+  /* Cursor dot */
+  .cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: var(--accent);
+    animation: blink 1s step-end infinite;
+    vertical-align: text-bottom;
+    margin-left: 4px;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+    margin: 0 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    section { padding: 60px 24px; }
+    .hero { padding: 100px 24px 60px; }
+    .about-grid, .edu-cards, .achievements-row, .projects-grid,
+    .comp-grid, .sports-grid, .impact-wrap { grid-template-columns: 1fr; }
+    .pos-item { grid-template-columns: 1fr; }
+    .pos-left { border-right: none; border-bottom: 1px solid var(--border); }
+    .hero-rank-badge { display: none; }
+    .hero-stats { gap: 24px; flex-wrap: wrap; }
+    footer { flex-direction: column; gap: 24px; text-align: center; }
+    .nav-links { display: none; }
+    .exp-item { grid-template-columns: 1fr; gap: 16px; }
+    .exp-meta::after { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">SB<span>_</span>CH24B100</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#impact">Impact</a></li>
+    <li><a href="#sports">Sports</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="scanline"></div>
+
+  <!-- Background UAV SVG -->
+  <svg class="hero-deco" viewBox="0 0 500 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M250 150 L50 80 L0 150 L50 220 L250 150Z" stroke="white" stroke-width="1" fill="none"/>
+    <path d="M250 150 L450 80 L500 150 L450 220 L250 150Z" stroke="white" stroke-width="1" fill="none"/>
+    <path d="M200 150 L280 150" stroke="white" stroke-width="2"/>
+    <path d="M250 100 L250 200" stroke="white" stroke-width="1"/>
+    <circle cx="250" cy="150" r="12" stroke="white" stroke-width="1" fill="none"/>
+    <path d="M100 80 L100 50 L150 80" stroke="white" stroke-width="0.5" fill="none"/>
+    <path d="M400 80 L400 50 L350 80" stroke="white" stroke-width="0.5" fill="none"/>
+    <circle cx="250" cy="150" r="3" fill="white"/>
+    <path d="M238 150 L250 138 L262 150 L250 162Z" fill="white" opacity="0.3"/>
+  </svg>
+
+  <div class="hero-label">Indian Institute of Technology Madras · CH24B100</div>
+
+  <div class="hero-name">
+    SPARSH<br>
+    <span class="accent-word">BANDI</span>
+  </div>
+
+  <p class="hero-sub">
+    Chemical Engineering student. UAV systems engineer. Builder of autonomous aircraft, flight computers, and smart systems.<span class="cursor"></span>
+  </p>
+
+  <div class="hero-stats">
+    <div>
+      <div class="hero-stat-num">3816</div>
+      <div class="hero-stat-label">JEE Advanced AIR</div>
+    </div>
+    <div>
+      <div class="hero-stat-num">7.83</div>
+      <div class="hero-stat-label">CGPA / 10</div>
+    </div>
+    <div>
+      <div class="hero-stat-num">7+</div>
+      <div class="hero-stat-label">UAVs & Drones Built</div>
+    </div>
+    <div>
+      <div class="hero-stat-num">4K+</div>
+      <div class="hero-stat-label">Lives Impacted</div>
+    </div>
+  </div>
+
+  <div class="hero-cta">
+    <a href="#experience" class="btn btn-primary">View Work</a>
+    <a href="#projects" class="btn btn-outline">See Projects</a>
+  </div>
+
+  <div class="hero-rank-badge">
+    <div class="badge-title">JEE Mains '24</div>
+    <div class="badge-value">AIR 3723</div>
+    <div class="badge-sub">Top 0.02% · 16L+ candidates</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header reveal">
+    <span class="section-number">01 /</span>
+    <h2 class="section-title">About Me</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>
+        I'm <span class="about-highlight">Sparsh Bandi</span>, a second-year B.Tech student in Chemical Engineering at <span class="about-highlight">IIT Madras</span>. My work lives at the intersection of aerospace engineering, autonomous systems, and electronics — from designing PCBs to tuning flight controllers for swarm UAVs.
+      </p>
+      <p>
+        I've built and flown <span class="about-highlight">7+ fixed-wing RC aircraft and 4+ quadcopters</span>, engineered a fully functional flight computer from scratch, and deployed real-time computer vision for autonomous aerial interception. I competed in Inter IIT Tech and placed <span class="about-highlight">Rank 2 in IIT POKERBOTS</span>, and was a finalist at the Shaastra Aerial Robotics Challenge.
+      </p>
+      <p>
+        Off the field, I've led social campaigns that reached thousands, and I'm a competitive tennis player ranked in the top 10% at my academy — with state-level competition experience and a UTR of 7+.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <div class="skills-block" style="margin-bottom:20px;">
+        <h3>Software & Tools</h3>
+        <div class="skill-tags">
+          <span class="tag highlight">Python</span>
+          <span class="tag highlight">C++</span>
+          <span class="tag highlight">ROS2</span>
+          <span class="tag highlight">Embedded C</span>
+          <span class="tag">Matlab / Simulink</span>
+          <span class="tag">ArduPilot</span>
+          <span class="tag">Pixhawk</span>
+          <span class="tag">YOLO / CV</span>
+          <span class="tag">KiCAD</span>
+          <span class="tag">AutoCAD</span>
+          <span class="tag">X-FOIL</span>
+          <span class="tag">Ansys CFD</span>
+          <span class="tag">LaTeX</span>
+          <span class="tag">Arduino</span>
+          <span class="tag">GitHub</span>
+          <span class="tag">Canva</span>
+        </div>
+      </div>
+      <div class="skills-block">
+        <h3>Core Courses</h3>
+        <div class="skill-tags">
+          <span class="tag">Engineering Mechanics</span>
+          <span class="tag">Fluid & Particle Mechanics</span>
+          <span class="tag">Signals & Systems</span>
+          <span class="tag">Kinetics & Catalysis</span>
+          <span class="tag">Probability & Statistics</span>
+          <span class="tag">Heat & Mass Transfer</span>
+          <span class="tag">Computational Techniques</span>
+          <span class="tag">Multivariate Data Analysis</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="section-header reveal">
+    <span class="section-number">02 /</span>
+    <h2 class="section-title">Education</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="edu-cards reveal">
+    <div class="edu-card">
+      <div class="edu-inst">IIT Madras</div>
+      <div class="edu-degree">B.Tech — Chemical Engineering</div>
+      <div class="edu-score">7.83 / 10</div>
+      <div class="edu-year">2024 – 2028</div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-inst">DPS Bangalore South</div>
+      <div class="edu-degree">Class XII · CBSE</div>
+      <div class="edu-score">92.8%</div>
+      <div class="edu-year">Graduated 2024 · 98% in PCMC</div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-inst">DPS Bangalore South</div>
+      <div class="edu-degree">Class X · CBSE</div>
+      <div class="edu-score">95.4%</div>
+      <div class="edu-year">Graduated 2022</div>
+    </div>
+  </div>
+
+  <div class="achievements-row reveal">
+    <div class="achievement-pill">
+      <div class="ach-icon">🏆</div>
+      <div class="ach-text">
+        <strong>AIR 3816</strong>
+        <span>JEE Advanced '24 · 1.8L+ qualified candidates</span>
+      </div>
+    </div>
+    <div class="achievement-pill">
+      <div class="ach-icon">⚡</div>
+      <div class="ach-text">
+        <strong>99.78%ile</strong>
+        <span>JEE Mains '24 · AIR 3723 · 16L+ candidates</span>
+      </div>
+    </div>
+    <div class="achievement-pill">
+      <div class="ach-icon">🎯</div>
+      <div class="ach-text">
+        <strong>328 / 390</strong>
+        <span>BITSAT · Top 0.05% of all candidates</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-header reveal">
+    <span class="section-number">03 /</span>
+    <h2 class="section-title">Experience</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="exp-item reveal">
+    <div class="exp-meta">
+      <div class="exp-company">Valkron Dynamics</div>
+      <div class="exp-role">Research Intern</div>
+      <div class="exp-date">Jul '25 – Aug '25</div>
+    </div>
+    <ul class="exp-bullets">
+      <li>Optimized real-time vision algorithms and object detection models for precise autonomous UAV tracking.</li>
+      <li>Engineered high-performance UAV models, maximizing aerodynamic and structural integrity for reliable flight.</li>
+      <li>Implemented intelligent guidance logic to ensure robust autonomous aerial mission performance.</li>
+    </ul>
+  </div>
+
+  <div class="exp-item reveal">
+    <div class="exp-meta">
+      <div class="exp-company">Abhyuday — Avionics & Electronics</div>
+      <div class="exp-role">Core Member</div>
+      <div class="exp-date">Sept '25 – Mar '26</div>
+    </div>
+    <ul class="exp-bullets">
+      <li>Solely developed a fully functional Flight Computer end-to-end — from PCB design in KiCAD to firmware writing and live execution.</li>
+      <li>Developed a multi-type (module + chip based) Ground Station Box with multifunctional telemetry features for hybrid rocket engine testing.</li>
+    </ul>
+  </div>
+
+  <div class="exp-item reveal">
+    <div class="exp-meta">
+      <div class="exp-company">Aero Club — IIT Madras</div>
+      <div class="exp-role">Member</div>
+      <div class="exp-date">Sept '25 – Mar '26</div>
+    </div>
+    <ul class="exp-bullets">
+      <li>Designed and manufactured 7+ unique fixed-wing RC aircraft and 4+ quadcopters across multiple design cycles.</li>
+      <li>Trained in piloting fixed-wings and multi-rotors through rigorous simulation and manual flying practice.</li>
+      <li>Represented IIT Madras at the <strong style="color:var(--white)">Boeing National Aeromodelling Championship</strong>.</li>
+    </ul>
+  </div>
+
+  <div class="exp-item reveal">
+    <div class="exp-meta">
+      <div class="exp-company">Shaastra — IIT Madras</div>
+      <div class="exp-role">Sponsorship & PR Volunteer</div>
+      <div class="exp-date">Dec '24 – Jan '25</div>
+    </div>
+    <ul class="exp-bullets">
+      <li>Assisted a core team in securing corporate sponsorship associations worth <strong style="color:var(--white)">INR 1.5 Crore+</strong>.</li>
+      <li>Led the social outreach campaign across NGOs, influencers, professionals, and institutions.</li>
+      <li>Coordinated 30 volunteers to execute a 5-day event featuring Caterpillar and IDFC corporate sponsorships.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header reveal">
+    <span class="section-number">04 /</span>
+    <h2 class="section-title">Technical Projects</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="projects-grid">
+    <div class="project-card reveal">
+      <div class="bg-num">01</div>
+      <div class="project-tag">Aero Club · Jun '25 – Mar '26</div>
+      <div class="project-name">Project<br>Icarus Prime</div>
+      <p class="project-desc">Stealth STOL UAV engineered for swarm-defense applications, featuring custom aerodynamics and an autonomous interception system.</p>
+      <div class="project-highlights">
+        <div class="project-hl">Researched 5+ papers; NACA 9415 airfoil for STOL stealth config</div>
+        <div class="project-hl">Autonomous YOLO vision model — trained on 500+ images, 0.6 confidence against aerial targets</div>
+        <div class="project-hl">ArduPilot flight controller tuned for UAV swarm-interception with geofencing</div>
+        <div class="project-hl">Upper Surface Blowing (USB) aerodynamics integrated</div>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="bg-num">02</div>
+      <div class="project-tag">Abhyuday · 2025–2026</div>
+      <div class="project-name">Flight<br>Computer</div>
+      <p class="project-desc">A fully custom-designed flight computer built entirely in-house — from schematic capture and PCB layout to firmware and real-world testing.</p>
+      <div class="project-highlights">
+        <div class="project-hl">Full PCB designed in KiCAD from scratch</div>
+        <div class="project-hl">Embedded C firmware written and deployed on hardware</div>
+        <div class="project-hl">Integrated with hybrid rocket engine ground station box</div>
+        <div class="project-hl">Multi-type (chip + module) telemetry system</div>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="bg-num">03</div>
+      <div class="project-tag">Aero Club · Manufacturing</div>
+      <div class="project-name">RC Aircraft<br>Fleet</div>
+      <p class="project-desc">End-to-end design and manufacturing of a diverse fleet of fixed-wing and multi-rotor aircraft for competitive aeromodelling.</p>
+      <div class="project-highlights">
+        <div class="project-hl">7+ unique fixed-wing RC aircraft designed and built</div>
+        <div class="project-hl">4+ quadcopter builds with custom tuning</div>
+        <div class="project-hl">Aerodynamic analysis via X-FOIL and Ansys CFD</div>
+        <div class="project-hl">Competed at Boeing National Aeromodelling Championship</div>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="bg-num">04</div>
+      <div class="project-tag">Autonomous Systems · Computer Vision</div>
+      <div class="project-name">YOLO UAV<br>Tracker</div>
+      <p class="project-desc">Real-time object detection and tracking pipeline for autonomous aerial interception — combining custom vision models with ArduPilot guidance.</p>
+      <div class="project-highlights">
+        <div class="project-hl">Trained on 500+ aerial target images</div>
+        <div class="project-hl">0.6 confidence score on live aerial targets</div>
+        <div class="project-hl">Integrated with Pixhawk + ROS2 for closed-loop control</div>
+        <div class="project-hl">Geofencing logic for safe swarm-zone enforcement</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- COMPETITIONS -->
+<section id="competitions">
+  <div class="section-header reveal">
+    <span class="section-number">05 /</span>
+    <h2 class="section-title">Competitions</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="comp-grid">
+    <div class="comp-card reveal">
+      <div class="comp-rank">#2</div>
+      <div class="comp-name">IIT POKERBOTS</div>
+      <div class="comp-context">Algorithmic game theory competition — ranked 2nd institute-wide. Top 2.2% of the Batch of '24.</div>
+    </div>
+    <div class="comp-card reveal">
+      <div class="comp-rank">TOP</div>
+      <div class="comp-name">Inter IIT Tech Meet — Aero PS</div>
+      <div class="comp-context">Represented IIT Madras in the Inter IIT Technical Contingent for the Aerospace Problem Statement, including Upper Surface Blowing (USB-40) design.</div>
+    </div>
+    <div class="comp-card reveal">
+      <div class="comp-rank">FNL</div>
+      <div class="comp-name">Shaastra Aerial Robotics Challenge</div>
+      <div class="comp-context">Finalist at IIT Madras's flagship tech fest aerial robotics challenge — demonstrating autonomous flight and navigation capabilities.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SOCIAL IMPACT -->
+<section id="impact">
+  <div class="section-header reveal">
+    <span class="section-number">06 /</span>
+    <h2 class="section-title">Social Impact</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="impact-wrap reveal">
+    <div>
+      <div class="impact-label">Shaastra IITM · Jun '24 – Feb '25</div>
+      <div class="impact-title">UZHAVU<br>CAMPAIGN</div>
+      <p class="impact-desc">
+        Uzhavu was Shaastra's flagship social campaign for 2024–2025, focused on sustainable agriculture. As a core member, I drove partnerships, digital outreach, and on-ground events — reaching over 4,000 lives across Tamil Nadu.
+      </p>
+      <br>
+      <p class="impact-desc" style="color: var(--accent3);">
+        Partnered with TNCCM, NAF, ScaNXT and 4+ other organizations · Organized the Uzhavu 5K run · Built a digital presence delivering 400+ organic interactions per post.
+      </p>
+    </div>
+    <div class="impact-metrics">
+      <div class="metric">
+        <div class="metric-val">4K+</div>
+        <div class="metric-label">Lives Impacted</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val">₹6L+</div>
+        <div class="metric-label">Sponsorship Secured</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val">500+</div>
+        <div class="metric-label">Students Engaged</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val">7+</div>
+        <div class="metric-label">Org. Partnerships</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SPORTS -->
+<section id="sports">
+  <div class="section-header reveal">
+    <span class="section-number">07 /</span>
+    <h2 class="section-title">Sports</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="sports-grid">
+    <div class="sport-card reveal" data-sport="TENNIS">
+      <div class="sport-name">Tennis</div>
+      <div class="sport-sub">AITA-Ranked · UTR 7+ · 6 years professional practice</div>
+      <div class="sport-medals">
+        <span class="medal gold">🥇 Inter-Hostel Gold 2025</span>
+        <span class="medal blue">TNTA State Circuit</span>
+        <span class="medal blue">UTR 7+</span>
+      </div>
+      <ul class="sport-details">
+        <li>Top 10% at TopSpin Tennis Academy, Bangalore — competing against citywide players as a certified AITA-ranked athlete</li>
+        <li>3+ tournament victories in UTR-rated competitions, peaking at UTR of 7+</li>
+        <li>4+ match wins at Tamil Nadu Tennis Association (TNTA) state-level competition, representing IIT Madras</li>
+        <li>Clinched the Inter-Hostel Gold Medal in Tennis (2025)</li>
+      </ul>
+    </div>
+
+    <div class="sport-card reveal" data-sport="BBALL">
+      <div class="sport-name">Basketball</div>
+      <div class="sport-sub">Collegiate Competitive · Vice-Captain</div>
+      <div class="sport-medals">
+        <span class="medal gold">🥇 Schroeters Gold 2026</span>
+        <span class="medal bronze">🥉 Inter-Dept Bronze</span>
+        <span class="medal blue">Semifinals 2025</span>
+      </div>
+      <ul class="sport-details">
+        <li>Active competitive player for 3+ years at the collegiate level</li>
+        <li>Clinched the IIT Madras Schroeters Gold Medal in 2026 — marquee institute-level championship</li>
+        <li>Reached Semifinals in 2025, reflecting consistent upward growth and on-court dominance</li>
+        <li>Secured Bronze Medal as Vice-Captain of the Inter-Department League</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-name">Sparsh Bandi</div>
+    <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.1em;margin-top:6px;">
+      B.Tech Chemical Engineering · IIT Madras · Class of 2028
+    </div>
+  </div>
+  <div class="footer-info">
+    <div><span class="footer-accent">//</span> Roll No: CH24B100</div>
+    <div><span class="footer-accent">//</span> Bangalore / Chennai, India</div>
+    <div><span class="footer-accent">//</span> UAV Systems · Avionics · Autonomous AI</div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  revealEls.forEach(el => observer.observe(el));
+
+  // Stagger siblings in same parent
+  document.querySelectorAll('.edu-cards, .achievements-row, .comp-grid, .projects-grid, .sports-grid, .impact-metrics').forEach(parent => {
+    const children = parent.querySelectorAll('.reveal');
+    children.forEach((el, i) => {
+      el.style.transitionDelay = `${i * 0.08}s`;
+    });
+  });
+
+  // Nav active scroll highlight
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 140) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
+    });
+  });
+</script>
+</body>
+</html>
